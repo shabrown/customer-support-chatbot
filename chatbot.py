@@ -70,8 +70,10 @@ def unicode_to_ascii(s):
 
 
 def preprocess_sentence(w):
+    """Pre-process users' requests or questions"""
     w = unicode_to_ascii(w.lower().strip())
-    w = re.sub(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', '<url>', w)
+    w = re.sub(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?',
+               '<url>', w)
     # creating a space between a word and the punctuation following it
     w = re.sub(r"([?.!,¿])", r" \1 ", w)
     w = re.sub(r'[" "]+', " ", w)
@@ -79,6 +81,7 @@ def preprocess_sentence(w):
     # replacing everything with space except (a-z, A-Z, ".", "?", "!", ",")
     w = re.sub(r"[^a-zA-Z?.!,¿<>]+", " ", w)
 
+    # lemmatize the word
     lemmatizer = WordNetLemmatizer()
     w = lemmatizer.lemmatize(w)
 
@@ -90,6 +93,7 @@ def preprocess_sentence(w):
 
 
 def evaluate(sentence):
+    """Generate response using the model """
     attention_plot = np.zeros((max_length_targ, max_length_inp))
     sentence = sentence.lower()
     sentence = preprocess_sentence(sentence)
