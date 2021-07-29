@@ -2,7 +2,6 @@ import json
 import re
 import os
 import unicodedata
-import numpy as np
 import tensorflow as tf
 from nltk.stem import WordNetLemmatizer
 from tensorflow import keras
@@ -92,9 +91,9 @@ def preprocess_sentence(w):
     return w
 
 
-def evaluate(sentence):
+def respond(sentence):
     """Generate response using the model """
-    attention_plot = np.zeros((max_length_targ, max_length_inp))
+    # attention_plot = np.zeros((max_length_targ, max_length_inp))
     sentence = sentence.lower()
     sentence = preprocess_sentence(sentence)
 
@@ -120,25 +119,16 @@ def evaluate(sentence):
         predictions, decoding_hidden, attention_weights = decoder.decode((
             decoding_input, decoding_hidden, encoding_out))
 
-        # storing the attention weights to plot later on
-        attention_weights = tf.reshape(attention_weights, (-1,))
-        attention_plot[t] = attention_weights.numpy()
-
         predicted_id = tf.argmax(predictions[0]).numpy()
 
         result += target_index_word[str(predicted_id)] + ' '
 
         if target_index_word[str(predicted_id)] == '<end>':
-            return result, sentence, attention_plot
+            return result
 
         # the predicted ID is fed back into the model
         decoding_input = tf.expand_dims([predicted_id], 0)
 
-    return result, sentence, attention_plot
+    return result
 
 
-def respond(sentence):
-    result, sentence, attention_plot = evaluate(sentence)
-    # print('Input: %s' % (sentence))
-    # print('Predicted response: {}'.format(result[:-6]))
-    return result[:-6]
