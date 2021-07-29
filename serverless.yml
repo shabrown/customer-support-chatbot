@@ -1,0 +1,72 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: chatbot
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-2
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "*"
+
+
+# you can add packaging information here
+package:
+#  include:
+#    - include-me.py
+#    - include-me-dir/**
+  exclude:
+    - node_modules/**
+    - package.json
+    - package-log.json
+    - cache/**
+    - test/**
+    - __pycache__/**
+    - .pytest_cache/**
+    - raw/**
+
+functions:
+  chatbot:
+    handler: handler.reply_tweets
+    memorySize: 3008
+    timeout: 300
+    events:
+      - schedule: cron(0 9 ? * * *)
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+    zip: true
+    noDeploy: []
+    useDownloadCache: true
+    useStaticCache: true
+    slimPatterns:
+      - "**/tensorboard*"
+      - "**/markdown*"
+      - "**/werkzeug*"
+      - "**/grpc*"
+      - "**/tensorflow/contrib*"
+      - "**/tensorflow/include*"
+
+plugins:
+  - serverless-python-requirements
