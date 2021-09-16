@@ -3,7 +3,6 @@ import re
 import os
 import unicodedata
 import tensorflow as tf
-from nltk.stem import WordNetLemmatizer
 from tensorflow import keras
 import boto3
 
@@ -80,10 +79,6 @@ def preprocess_sentence(w):
     # replacing everything with space except (a-z, A-Z, ".", "?", "!", ",")
     w = re.sub(r"[^a-zA-Z?.!,¿<>]+", " ", w)
 
-    # lemmatize the word
-    lemmatizer = WordNetLemmatizer()
-    w = lemmatizer.lemmatize(w)
-
     w = w.rstrip().strip()
     # adding a start and an end token to the sentence
     # so that the model know when to start and stop predicting.
@@ -93,7 +88,6 @@ def preprocess_sentence(w):
 
 def respond(sentence):
     """Generate response using the model """
-    # attention_plot = np.zeros((max_length_targ, max_length_inp))
     sentence = sentence.lower()
     sentence = preprocess_sentence(sentence)
 

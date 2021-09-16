@@ -20,53 +20,73 @@ provider:
   name: aws
   runtime: python3.8
   region: us-east-2
-
+  memorySize: 10240
+  timeout: 300
 # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "s3:*"
+        - "dynamodb:*"
       Resource: "*"
 
 
 # you can add packaging information here
-package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-  exclude:
-    - node_modules/**
-    - package.json
-    - package-log.json
-    - cache/**
-    - test/**
-    - __pycache__/**
-    - .pytest_cache/**
-    - raw/**
+#package:
+##  individually: true
+##  include:
+##    - include-me.py
+##    - include-me-dir/**
+#  exclude:
+#    - node_modules/**
+#    - package.json
+#    - package-log.json
+#    - cache/**
+#    - test/**
+#    - __pycache__/**
+#    - .pytest_cache/**
+#    - raw/**
+#    - venv/**
+#    - .git/**
+#    - .DS_Store
+#    - .pyc
+#    - /external/*
+#    - /tensorflow/contrib/*
+#    - /tensorflow/include/unsupported/*.
 
 functions:
   chatbot:
-    handler: handler.reply_tweets
-    memorySize: 3008
-    timeout: 300
+#    handler: handler.reply_tweets
+#    memorySize: 10240
+#    timeout: 300
+    image: 028050957209.dkr.ecr.us-east-2.amazonaws.com/chatbot-lambda@sha256:b86793ee3dd94c6ca7a85ba6d112e401b76bf8d47cfe2e1a996821bc1435178d
     events:
       - schedule: cron(0 9 ? * * *)
 
-custom:
-  pythonRequirements:
-    dockerizePip: true
-    slim: true
-    zip: true
-    noDeploy: []
-    useDownloadCache: true
-    useStaticCache: true
-    slimPatterns:
-      - "**/tensorboard*"
-      - "**/markdown*"
-      - "**/werkzeug*"
-      - "**/grpc*"
-      - "**/tensorflow/contrib*"
-      - "**/tensorflow/include*"
+#custom:
+#  pythonRequirements:
+#    dockerizePip: true
+#    slim: true
+#    zip: true
+#    strip: false
+#    useDownloadCache: true
+#    useStaticCache: true
+#    cacheLocation: "./cache"
+#    noDeploy:
+#      - boto3
+#      - botocore
+#      - docutils
+#      - jmespath
+#      - pip
+#      - python-dateutil
+#      - s3transfer
+#      - setuptools
+#      - six
+#      - tensorboard
 
-plugins:
-  - serverless-python-requirements
+#  webpack:
+#    config: ./path/to/config/file.js
+#    series: true # run Webpack in series, useful for large projects. Defaults to false.
+
+#plugins:
+#  - serverless-python-requirements
